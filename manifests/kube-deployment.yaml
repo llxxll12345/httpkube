@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kubeweb
+  labels:
+    app: kube
+spec:
+  selector:
+    matchLabels:
+      app: kube
+      tier: web
+  template:
+    metadata:
+      labels:
+        app: kube
+        tier: web
+    spec:
+      containers:
+      - name: kube-app
+        image: gcr.io/google.com:continual-rhino-163221/kube-app:1.0
+        ports:
+        - containerPort: 8080
