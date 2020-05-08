@@ -1,12 +1,12 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: helloweb
+  name: kubeweb
   labels:
-    app: hello
+    app: kube
 spec:
   selector:
-    app: hello
+    app: kube
     tier: web
   ports:
   - port: 80
