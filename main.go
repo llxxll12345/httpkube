@@ -1,12 +1,18 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
 	"strconv"
 )
+
+type AddRequest struct {
+	Addon int
+}
 
 func hello(w http.ResponseWriter, r *http.Request) {
 	log.Printf("Serving request: %s", r.URL.Path)
@@ -20,9 +26,9 @@ func GetHeaders(w http.ResponseWriter, r *http.Request) {
 	log.Printf("Serving request: %s with %s", r.URL.Path, r.Method)
 
 	fmt.Println("Query")
-	quries := r.URL.Query()
-	if val, ok := quries["key"]; ok {
-		fmt.Println(len(quries), val)
+	queries := r.URL.Query()
+	if val, ok := queries["key"]; ok {
+		fmt.Println(len(queries), val)
 	} else {
 		fmt.Fprintf(w, "No key in query: %s\n", "key")
 	}
@@ -45,9 +51,9 @@ func MultiHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	switch r.Method {
 	case "GET":
-		quries := r.URL.Query()
-		if val, ok := quries["a"]; ok {
-			fmt.Println(len(quries), val)
+		queries := r.URL.Query()
+		if val, ok := queries["a"]; ok {
+			fmt.Println(len(queries), val)
 			i, _ := strconv.Atoi(val[0])
 			fmt.Fprintf(w, "result: %d\n", i*2)
 		} else {
@@ -55,6 +61,21 @@ func MultiHandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 	case "POST":
+		requestBody, err := ioutil.ReadAll(r.Body)
+		if err != nil {
+			log.Fatal(err)
+		}
+		fmt.Printf("%s\n", requestBody)
+
+		//testStr := `{"Addon":123}`
+		var addRequest AddRequest
+		json.Unmarshal(requestBody, &addRequest)
+		fmt.Printf("result: %d\n", addRequest.Addon)
+
+		w.Write([]byte("Receive request"))
+	default:
+		w.WriteHeader(http.StatusNotImplemented)
+		w.Write([]byte(http.StatusText(http.StatusNotImplemented)))
 	}
 }
 

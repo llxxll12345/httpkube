@@ -17,6 +17,6 @@ spec:
     spec:
       containers:
       - name: kube-app
-        image: gcr.io/google.com:continual-rhino-163221/kube-app:1.0
+        image: gcr.io/google.com/continual-rhino-163221/kube-app:1.0
         ports:
         - containerPort: 8080
